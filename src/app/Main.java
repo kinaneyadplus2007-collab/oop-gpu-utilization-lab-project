@@ -17,10 +17,13 @@ import model.RuleException;
 import model.Student;
 import model.User;
 import storage.DataStore;
-import ui.AdminPanel;
+import ui.AdminFrame;
+import ui.AppContext;
 import ui.ClockSetupDialog;
 import ui.LoginFrame;
+import ui.RequestsPanel;
 import ui.StudentFrame;
+import ui.StudentsPanel;
 
 public class Main {
 
@@ -28,8 +31,10 @@ public class Main {
     private final SimulationClock clock = new SimulationClock();
     private final Scheduler scheduler = new Scheduler(clock, accounts);
     private final DataStore store = new DataStore();
+    private final AppContext context = new AppContext(clock, accounts, scheduler);
 
     private LoginFrame loginFrame;
+    private JFrame activeWindow;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Main().start());
@@ -59,10 +64,12 @@ public class Main {
             return;
         }
 
+        context.setSaver(() -> save());
+
         loginFrame = new LoginFrame(
                 accounts,
                 user -> openUserWindow(user),
-                () -> save()
+                () -> context.afterChange()
         );
 
         loginFrame.setDefaultCloseOperation(
@@ -89,30 +96,30 @@ public class Main {
                     (Student) user,
                     scheduler,
                     clock,
-                    () -> save()
+                    () -> context.afterChange()
             );
 
         } else if (user instanceof Administrator) {
-            window = new JFrame(
-                    "GPU Management — Administrator"
-            );
-
             if (!clock.isSet()) {
-                new ClockSetupDialog(window, clock)
+                new ClockSetupDialog(loginFrame, clock)
                         .setVisible(true);
 
                 if (!clock.isSet() || !save()) {
-                    window.dispose();
                     return;
                 }
             }
 
-            window.setContentPane(
-                    new AdminPanel(accounts, () -> clock.now())
+            RequestsPanel requests = new RequestsPanel(
+                    accounts, () -> context.afterChange()
             );
 
-            window.setSize(900, 550);
-            window.setLocationRelativeTo(null);
+            StudentsPanel students = new StudentsPanel(
+                    accounts, () -> clock.now(), () -> context.afterChange()
+            );
+
+            window = new AdminFrame(
+                    context, () -> closeUserWindow(), requests, students
+            );
 
         } else {
             JOptionPane.showMessageDialog(
@@ -121,46 +128,38 @@ public class Main {
             return;
         }
 
-        window.setDefaultCloseOperation(
-                JFrame.DO_NOTHING_ON_CLOSE
-        );
-
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                if (save()) {
-                    window.dispose();
-                    loginFrame.setVisible(true);
+        if (user instanceof Student) {
+            window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            window.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    closeUserWindow();
                 }
-            }
-        });
+            });
 
-        JButton logout = new JButton("Log out");
+            JButton logout = new JButton("Log out");
+            logout.addActionListener(e -> closeUserWindow());
 
-        logout.addActionListener(e -> window.dispatchEvent(
-                new WindowEvent(
-                        window,
-                        WindowEvent.WINDOW_CLOSING
-                )
-        ));
+            JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttons.add(logout);
 
-        JPanel buttons = new JPanel(
-                new FlowLayout(FlowLayout.RIGHT)
-        );
+            JPanel content = new JPanel(new BorderLayout());
+            content.add(window.getContentPane(), BorderLayout.CENTER);
+            content.add(buttons, BorderLayout.NORTH);
+            window.setContentPane(content);
+        }
 
-        buttons.add(logout);
-
-        JPanel content = new JPanel(new BorderLayout());
-        content.add(
-                window.getContentPane(),
-                BorderLayout.CENTER
-        );
-        content.add(buttons, BorderLayout.NORTH);
-
-        window.setContentPane(content);
-
+        activeWindow = window;
         loginFrame.setVisible(false);
         window.setVisible(true);
+    }
+
+    private void closeUserWindow() {
+        if (activeWindow != null && save()) {
+            activeWindow.dispose();
+            activeWindow = null;
+            loginFrame.setVisible(true);
+        }
     }
 
     private boolean save() {

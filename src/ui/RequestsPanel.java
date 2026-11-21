@@ -10,15 +10,21 @@ import logic.Validator;
 import model.AccessRequest;
 import model.RuleException;
 
-public class RequestsPanel extends JPanel {
+public class RequestsPanel extends JPanel implements Refreshable {
     private AccountService accounts;
+    private final Runnable onChange;
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField minutesField;
     private List<AccessRequest> shown;
 
     public RequestsPanel(AccountService accounts) {
+        this(accounts, () -> { });
+    }
+
+    public RequestsPanel(AccountService accounts, Runnable onChange) {
         this.accounts = accounts;
+        this.onChange = onChange == null ? () -> { } : onChange;
         setLayout(new BorderLayout());
 
         tableModel = new DefaultTableModel(
@@ -56,6 +62,7 @@ public class RequestsPanel extends JPanel {
         refresh();
     }
 
+    @Override
     public void refresh() {
         tableModel.setRowCount(0);
         shown = accounts.getRequests();
@@ -98,6 +105,7 @@ public class RequestsPanel extends JPanel {
             accounts.approve(
                     request, Integer.parseInt(minutesField.getText().trim()));
             refresh();
+            onChange.run();
         } catch (RuleException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -112,6 +120,7 @@ public class RequestsPanel extends JPanel {
         try {
             accounts.reject(request);
             refresh();
+            onChange.run();
         } catch (RuleException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
