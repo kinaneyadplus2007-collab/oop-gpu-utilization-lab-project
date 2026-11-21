@@ -35,6 +35,12 @@ public class ClockSetupDialog extends JDialog {
                 new JSpinner.DateEditor(timeSpinner, "HH:mm")
         );
 
+        ((JSpinner.DateEditor) dateSpinner.getEditor())
+        .getFormat().setLenient(false);
+
+        ((JSpinner.DateEditor) timeSpinner.getEditor())
+        .getFormat().setLenient(false);
+
         JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
         panel.setBorder(
                 BorderFactory.createEmptyBorder(16, 16, 16, 16)
