@@ -18,10 +18,8 @@ public class AccountService {
     private final List<AccessRequest> requests = new ArrayList<>();
     private final List<TimeGrant> grants = new ArrayList<>();
 
-    public AccessRequest register(String id, String name, String email, String phone, String password)
-            throws RuleException {
-        if (!Validator.notBlank(id) || !Validator.notBlank(name) || !Validator.notBlank(email)
-                || !Validator.notBlank(phone) || !Validator.notBlank(password)) {
+    public AccessRequest register(String id, String name, String email, String phone, String password) throws RuleException {
+        if (!Validator.notBlank(id) || !Validator.notBlank(name) || !Validator.notBlank(email) || !Validator.notBlank(phone) || !Validator.notBlank(password)) {
             throw new RuleException("Please fill in every field.");
         }
         id = id.trim();
@@ -80,8 +78,7 @@ public class AccountService {
             throw new RuleException("The university ID " + request.getUniversityId() + " already has an account.");
         }
         request.approve();
-        Student student = new Student(request.getUniversityId(), request.getName(), request.getEmail(),
-                request.getPhone(), request.getPassword(), minutes);
+        Student student = new Student(request.getUniversityId(), request.getName(), request.getEmail(), request.getPhone(), request.getPassword(), minutes);
         students.put(student.getUsername(), student);
         return student;
     }
@@ -90,8 +87,7 @@ public class AccountService {
         request.reject();
     }
 
-    public void grantTime(Student student, int minutes, String reason, String adminName, LocalDateTime now)
-            throws RuleException {
+    public void grantTime(Student student, int minutes, String reason, String adminName, LocalDateTime now) throws RuleException {
         if (!Validator.notBlank(reason)) {
             throw new RuleException("A reason is required to grant extra time.");
         }
