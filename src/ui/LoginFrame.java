@@ -68,14 +68,19 @@ public class LoginFrame extends JFrame {
 }
 
     private void openRegistration() {
-        // Open RegisterPanel here once we build it.
-        JOptionPane.showMessageDialog(
-                this,
-                "Registration form is not connected yet.",
-                "Registration",
-                JOptionPane.INFORMATION_MESSAGE
+    JDialog dialog = new JDialog(this, "Student registration", true);
+
+        RegisterPanel panel = new RegisterPanel(
+                accounts,
+                () -> dialog.dispose()
         );
+
+        dialog.setContentPane(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
+    
 
     public static void main(String[] args) {
     AccountService accounts = new AccountService();
