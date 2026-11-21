@@ -13,13 +13,13 @@ public class Job implements Storable, Cancellable {
     private final LocalDateTime submissionTime;
 
     private JobStatus status = JobStatus.QUEUED;
-    private int assignedGpuId;   // 0 means that no gpu yet     
-    private LocalDateTime startTime;    
-    private LocalDateTime finishTime;       
+    private int assignedGpuId; // 0 means no GPU assigned yet
+    private LocalDateTime startTime;
+    private LocalDateTime finishTime;
     private String cancelledBy;
     private String cancelReason;
     private LocalDateTime cancelTime;
-    private boolean settled;                
+    private boolean settled;
 
     public Job(String jobId, String studentId, String title, String applicationName,
                String description, TaskSize taskSize, LocalDateTime submissionTime) {
@@ -32,7 +32,6 @@ public class Job implements Storable, Cancellable {
         this.submissionTime = submissionTime;
     }
 
-
     public String getJobId() { return jobId; }
     public String getStudentId() { return studentId; }
     public String getTitle() { return title; }
@@ -42,7 +41,6 @@ public class Job implements Storable, Cancellable {
     public int getWorkloadUnits() { return taskSize.getUnits(); }
     public int getDuration() { return taskSize.getUnits(); }
     public LocalDateTime getSubmissionTime() { return submissionTime; }
-
 
     public JobStatus getStatus() { return status; }
     public int getAssignedGpuId() { return assignedGpuId; }
@@ -56,8 +54,6 @@ public class Job implements Storable, Cancellable {
     public void markSettled() {
         settled = true;
     }
-
-   
 
     public void start(int gpuId, LocalDateTime now) throws RuleException {
         if (status != JobStatus.QUEUED) {
@@ -89,7 +85,7 @@ public class Job implements Storable, Cancellable {
             throw new RuleException("A reason is required to cancel a job.");
         }
         if (status == JobStatus.RUNNING) {
-            finishTime = now;              
+            finishTime = now;
         }
         cancelledBy = by;
         cancelReason = reason.trim();
@@ -111,6 +107,51 @@ public class Job implements Storable, Cancellable {
 
     @Override
     public String toLine() {
-        throw new UnsupportedOperationException("TODO: agree the line format with Ali (DataStore)");
+        return Lines.join(
+                Lines.enc(jobId),
+                Lines.enc(studentId),
+                Lines.enc(title),
+                Lines.enc(applicationName),
+                Lines.enc(description),
+                taskSize.name(),
+                Lines.time(submissionTime),
+                status.name(),
+                String.valueOf(assignedGpuId),
+                Lines.time(startTime),
+                Lines.time(finishTime),
+                Lines.enc(cancelledBy),
+                Lines.enc(cancelReason),
+                Lines.time(cancelTime),
+                String.valueOf(settled)
+        );
+    }
+
+    public static Job fromLine(String line) throws RuleException {
+        String[] f = Lines.split(line, 15);
+
+        try {
+            Job job = new Job(
+                    Lines.dec(f[0]),
+                    Lines.dec(f[1]),
+                    Lines.dec(f[2]),
+                    Lines.dec(f[3]),
+                    Lines.dec(f[4]),
+                    TaskSize.valueOf(f[5]),
+                    Lines.parseTime(f[6])
+            );
+
+            job.status = JobStatus.valueOf(f[7]);
+            job.assignedGpuId = Integer.parseInt(f[8]);
+            job.startTime = Lines.parseTime(f[9]);
+            job.finishTime = Lines.parseTime(f[10]);
+            job.cancelledBy = f[11].isEmpty() ? null : Lines.dec(f[11]);
+            job.cancelReason = f[12].isEmpty() ? null : Lines.dec(f[12]);
+            job.cancelTime = Lines.parseTime(f[13]);
+            job.settled = Boolean.parseBoolean(f[14]);
+
+            return job;
+        } catch (IllegalArgumentException | java.time.format.DateTimeParseException e) {
+            throw new RuleException("Bad saved job line.");
+        }
     }
 }
