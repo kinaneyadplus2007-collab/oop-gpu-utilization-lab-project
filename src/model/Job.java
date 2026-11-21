@@ -13,13 +13,13 @@ public class Job implements Storable, Cancellable {
     private final LocalDateTime submissionTime;
 
     private JobStatus status = JobStatus.QUEUED;
-    private int assignedGpuId;              // 0 = no GPU yet
-    private LocalDateTime startTime;        // null until the job starts running
-    private LocalDateTime finishTime;       // completion time, or the time a running job was cancelled
+    private int assignedGpuId;   // 0 means that no gpu yet     
+    private LocalDateTime startTime;    
+    private LocalDateTime finishTime;       
     private String cancelledBy;
     private String cancelReason;
     private LocalDateTime cancelTime;
-    private boolean settled;                // true once the allowance was settled (never charge twice)
+    private boolean settled;                
 
     public Job(String jobId, String studentId, String title, String applicationName,
                String description, TaskSize taskSize, LocalDateTime submissionTime) {
@@ -32,7 +32,6 @@ public class Job implements Storable, Cancellable {
         this.submissionTime = submissionTime;
     }
 
-    // ----- fields that never change after the job is accepted -----
 
     public String getJobId() { return jobId; }
     public String getStudentId() { return studentId; }
@@ -44,7 +43,6 @@ public class Job implements Storable, Cancellable {
     public int getDuration() { return taskSize.getUnits(); }
     public LocalDateTime getSubmissionTime() { return submissionTime; }
 
-    // ----- fields set while the job moves through its states -----
 
     public JobStatus getStatus() { return status; }
     public int getAssignedGpuId() { return assignedGpuId; }
@@ -59,7 +57,7 @@ public class Job implements Storable, Cancellable {
         settled = true;
     }
 
-    // ----- state changes -----
+   
 
     public void start(int gpuId, LocalDateTime now) throws RuleException {
         if (status != JobStatus.QUEUED) {
@@ -83,7 +81,6 @@ public class Job implements Storable, Cancellable {
         return status == JobStatus.QUEUED || status == JobStatus.RUNNING;
     }
 
-    @Override
     public void cancel(String by, String reason, LocalDateTime now) throws RuleException {
         if (!isCancellable()) {
             throw new RuleException("Job " + jobId + " is " + status + " and cannot be cancelled.");
@@ -92,7 +89,7 @@ public class Job implements Storable, Cancellable {
             throw new RuleException("A reason is required to cancel a job.");
         }
         if (status == JobStatus.RUNNING) {
-            finishTime = now;               // the time a running job was cancelled
+            finishTime = now;              
         }
         cancelledBy = by;
         cancelReason = reason.trim();
@@ -100,9 +97,6 @@ public class Job implements Storable, Cancellable {
         status = JobStatus.CANCELLED;
     }
 
-    // ----- values worked out from the records -----
-
-    /** Minutes this job has really run on a GPU (0 if it never started). */
     public int minutesRun(LocalDateTime now) {
         if (startTime == null) {
             return 0;
@@ -111,7 +105,6 @@ public class Job implements Storable, Cancellable {
         return (int) ChronoUnit.MINUTES.between(startTime, end);
     }
 
-    /** When a running job will finish (start + duration), or null if it has not started. */
     public LocalDateTime expectedFinish() {
         return (startTime == null) ? null : startTime.plusMinutes(getDuration());
     }
