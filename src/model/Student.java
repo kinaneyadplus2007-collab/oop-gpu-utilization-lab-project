@@ -42,6 +42,38 @@ public class Student extends User implements Storable {
 
     @Override
     public String toLine() {
-        throw new UnsupportedOperationException("TODO: agree the line format with Ali (DataStore)");
+        return Lines.join(
+                Lines.enc(getUsername()),
+                Lines.enc(getName()),
+                Lines.enc(email),
+                Lines.enc(phone),
+                Lines.enc(getPassword()),
+                String.valueOf(allowance.getAllocated()),
+                String.valueOf(allowance.getUsed()),
+                String.valueOf(allowance.getReserved())
+        );
+    }
+
+    public static Student fromLine(String line) throws RuleException {
+        String[] f = Lines.split(line, 8);
+
+        try {
+            TimeAllowance saved = new TimeAllowance(
+                    Integer.parseInt(f[5]),
+                    Integer.parseInt(f[6]),
+                    Integer.parseInt(f[7])
+            );
+
+            return new Student(
+                    Lines.dec(f[0]),
+                    Lines.dec(f[1]),
+                    Lines.dec(f[2]),
+                    Lines.dec(f[3]),
+                    Lines.dec(f[4]),
+                    saved
+            );
+        } catch (NumberFormatException e) {
+            throw new RuleException("Bad saved student line.");
+        }
     }
 }
