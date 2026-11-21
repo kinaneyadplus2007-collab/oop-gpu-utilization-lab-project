@@ -1,8 +1,3 @@
-100001|Kinan+Zein+Aldean|kinan.zeinaldean%40example.com|0501234567|pass1001|APPROVED
-100002|Yousif+Allam|yousif.allam%40example.com|0559876543|pass1002|APPROVED
-100003|Layla+Hassan|layla.hassan%40ku.ac.ae|0507654321|pass1003|APPROVED
-100004|Ali|ali%40example.com|0528887766|pass1004|APPROVED
-100005|Maryam+Saeed|maryam.saeed%40ku.ac.ae|0543332211|pass1005|APPROVED
-100006|Khalid+Nasser|khalid.nasser%40ku.ac.ae|0561112233|pass1006|PENDING
-100007|Noor+Salem|noor.salem%40ku.ac.ae|0574445566|pass1007|PENDING
-100008|Fahad+Obaid|fahad.obaid%40ku.ac.ae|0589998877|pass1008|REJECTED
+1001|Ali|ali%40example.com|0501234567|test123|APPROVED
+1002|Sara|sara%40example.com|0501234568|test456|PENDING
+1003|Ahmed|ahmed%40example.com|0501234569|test789|REJECTED

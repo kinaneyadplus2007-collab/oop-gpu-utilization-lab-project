@@ -1,20 +1,8 @@
-J101|100001|Image+resize|PyTorch|Sample+job+J101|SMALL|16/11/2026 08:00|COMPLETED|1|16/11/2026 08:00|16/11/2026 08:05||||true
-J102|100002|Train+classifier|TensorFlow|Sample+job+J102|MEDIUM|16/11/2026 08:02|COMPLETED|2|16/11/2026 08:02|16/11/2026 08:17||||true
-J103|100003|Fine-tune+model|PyTorch|Sample+job+J103|LARGE|16/11/2026 08:04|COMPLETED|3|16/11/2026 08:04|16/11/2026 08:34||||true
-J104|100004|Protein+folding|JAX|Sample+job+J104|VERY_LARGE|16/11/2026 08:06|RUNNING|1|16/11/2026 08:06|||||false
-J105|100005|Sentiment+analysis|PyTorch|Sample+job+J105|MEDIUM|16/11/2026 08:08|CANCELLED|4|16/11/2026 08:08|16/11/2026 08:12|100005|Wrong+dataset+selected|16/11/2026 08:12|true
-J106|100001|Object+detection|TensorFlow|Sample+job+J106|LARGE|16/11/2026 08:10|COMPLETED|4|16/11/2026 08:12|16/11/2026 08:42||||true
-J107|100002|Quick+test|PyTorch|Sample+job+J107|SMALL|16/11/2026 08:12|COMPLETED|2|16/11/2026 08:17|16/11/2026 08:22||||true
-J108|100003|Data+augmentation|PyTorch|Sample+job+J108|MEDIUM|16/11/2026 08:14|COMPLETED|2|16/11/2026 08:22|16/11/2026 08:37||||true
-J109|100004|Climate+simulation|JAX|Sample+job+J109|LARGE|16/11/2026 08:16|CANCELLED|3|16/11/2026 08:34|16/11/2026 08:42|Administrator|Wrong+input+files|16/11/2026 08:42|true
-J110|100005|Hyperparameter+check|TensorFlow|Sample+job+J110|SMALL|16/11/2026 08:18|COMPLETED|2|16/11/2026 08:37|16/11/2026 08:42||||true
-J111|100001|Speech+model|PyTorch|Sample+job+J111|MEDIUM|16/11/2026 08:20|RUNNING|2|16/11/2026 08:42|||||false
-J112|100002|Language+model|TensorFlow|Sample+job+J112|VERY_LARGE|16/11/2026 08:22|RUNNING|3|16/11/2026 08:42|||||false
-J113|100003|Unit+benchmark|PyTorch|Sample+job+J113|SMALL|16/11/2026 08:24|COMPLETED|4|16/11/2026 08:42|16/11/2026 08:47||||true
-J114|100004|Graph+network|JAX|Sample+job+J114|MEDIUM|16/11/2026 08:26|RUNNING|4|16/11/2026 08:47|||||false
-J115|100005|Image+segmentation|PyTorch|Sample+job+J115|LARGE|16/11/2026 08:28|QUEUED|0||||||false
-J116|100001|Feature+extraction|PyTorch|Sample+job+J116|SMALL|16/11/2026 08:30|CANCELLED|0|||100001|Submitted+by+mistake|16/11/2026 08:36|true
-J117|100002|Reinforcement+learning|TensorFlow|Sample+job+J117|MEDIUM|16/11/2026 08:32|QUEUED|0||||||false
-J118|100003|Style+transfer|PyTorch|Sample+job+J118|LARGE|16/11/2026 08:34|CANCELLED|0|||Administrator|Duplicate+job|16/11/2026 08:40|true
-J119|100004|Embedding+test|JAX|Sample+job+J119|SMALL|16/11/2026 08:36|QUEUED|0||||||false
-J120|100005|Time+series+model|TensorFlow|Sample+job+J120|MEDIUM|16/11/2026 08:38|QUEUED|0||||||false
+J101|1001|Small+job|Java|Will+complete|SMALL|16/11/2026 10:00|COMPLETED|1|16/11/2026 10:00|16/11/2026 10:05||||true
+J102|1001|Cancelled+job|Java|Will+cancel+while+running|MEDIUM|16/11/2026 10:00|CANCELLED|2|16/11/2026 10:00|16/11/2026 10:02|1001|Test+running+cancellation|16/11/2026 10:02|true
+J103|1001|Running+A|Java|Keep+running|LARGE|16/11/2026 10:00|RUNNING|3|16/11/2026 10:00|||||false
+J104|1001|Running+B|Java|Keep+running|LARGE|16/11/2026 10:00|RUNNING|4|16/11/2026 10:00|||||false
+J105|1001|Waiting+A|Java|Will+start+after+cancellation|MEDIUM|16/11/2026 10:00|RUNNING|2|16/11/2026 10:02|||||false
+J106|1001|Queued+cancellation|Java|Cancel+without+charging|SMALL|16/11/2026 10:00|CANCELLED|0|||1001|Test+queued+cancellation|16/11/2026 10:00|true
+J107|1001|Waiting+B|Java|Will+start+after+completion|LARGE|16/11/2026 10:00|RUNNING|1|16/11/2026 10:05|||||false
+J108|1001|Waiting+C|Java|Remain+queued|MEDIUM|16/11/2026 10:00|QUEUED|0||||||false
