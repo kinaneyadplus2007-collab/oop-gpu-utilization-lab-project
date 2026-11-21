@@ -13,9 +13,9 @@ public class Job implements Storable, Cancellable {
     private final LocalDateTime submissionTime;
 
     private JobStatus status = JobStatus.QUEUED;
-    private int assignedGpuId;              
-    private LocalDateTime startTime;        
-    private LocalDateTime finishTime;    
+    private int assignedGpuId;   // 0 means that no gpu yet     
+    private LocalDateTime startTime;    
+    private LocalDateTime finishTime;       
     private String cancelledBy;
     private String cancelReason;
     private LocalDateTime cancelTime;
@@ -43,6 +43,7 @@ public class Job implements Storable, Cancellable {
     public int getDuration() { return taskSize.getUnits(); }
     public LocalDateTime getSubmissionTime() { return submissionTime; }
 
+
     public JobStatus getStatus() { return status; }
     public int getAssignedGpuId() { return assignedGpuId; }
     public LocalDateTime getStartTime() { return startTime; }
@@ -55,6 +56,8 @@ public class Job implements Storable, Cancellable {
     public void markSettled() {
         settled = true;
     }
+
+   
 
     public void start(int gpuId, LocalDateTime now) throws RuleException {
         if (status != JobStatus.QUEUED) {
@@ -78,7 +81,6 @@ public class Job implements Storable, Cancellable {
         return status == JobStatus.QUEUED || status == JobStatus.RUNNING;
     }
 
-    @Override
     public void cancel(String by, String reason, LocalDateTime now) throws RuleException {
         if (!isCancellable()) {
             throw new RuleException("Job " + jobId + " is " + status + " and cannot be cancelled.");
@@ -87,7 +89,7 @@ public class Job implements Storable, Cancellable {
             throw new RuleException("A reason is required to cancel a job.");
         }
         if (status == JobStatus.RUNNING) {
-            finishTime = now;           
+            finishTime = now;              
         }
         cancelledBy = by;
         cancelReason = reason.trim();
