@@ -1,1 +1,5 @@
-1001|Ali|ali%40example.com|0501234567|test123|150|7|120
+1001|Ali|student1001%40example.com|0501234500|demo123|120|7|60
+1002|Sara|student1002%40example.com|0501234501|demo123|100|7|70
+1003|Hamad|student1003%40example.com|0501234502|demo123|100|5|45
+1004|Mariam|student1004%40example.com|0501234503|demo123|100|5|30
+1005|Noura|student1005%40example.com|0501234504|demo123|105|0|90
