@@ -9,12 +9,12 @@ import logic.*;
 import model.*;
 
 public class DashboardPanel extends JPanel implements Refreshable {
-    private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("dd/MM HH:mm");
+    private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final AppContext context;
     private final JLabel summary = new JLabel();
     private final JPanel gpuGrid = new JPanel(new GridLayout(1, 4, 8, 8));
-    private final DefaultTableModel waitingModel = model("Job", "Student", "Application", "Duration", "Position", "Predicted start", "Wait");
+    private final DefaultTableModel waitingModel = model("Job", "Student", "Application", "Duration", "Position", "Predicted start", "Predicted finish", "Wait");
     private final DefaultTableModel completedModel = model("Job", "Student", "GPU", "Submitted", "Started", "Finished","Runtime", "Queue wait", "Charged");
     private final DefaultTableModel balancesModel = model("Student", "Allocated", "Used", "Reserved", "Available");
 
@@ -51,7 +51,12 @@ public class DashboardPanel extends JPanel implements Refreshable {
     private static JPanel tablePanel(String title, DefaultTableModel model) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder(title));
-        panel.add(new JScrollPane(new JTable(model)), BorderLayout.CENTER);
+        JTable table = new JTable(model);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(145);
+        }
+        panel.add(new JScrollPane(table), BorderLayout.CENTER);
         return panel;
     }
 
@@ -99,7 +104,8 @@ public class DashboardPanel extends JPanel implements Refreshable {
                     job.getApplicationName(),
                     job.getDuration() + " min",
                     scheduler.queuePosition(job),
-                    format(scheduler.predictedStart(job)),
+                    "≈ " + format(scheduler.predictedStart(job)),
+                    "≈ " + format(scheduler.predictedFinish(job)),
                     scheduler.remainingWait(job) + " min"
             });
         }

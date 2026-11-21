@@ -76,6 +76,10 @@ public class TimeAllowance {
             {
                 throw new RuleException("Extra time must be a positive whole number of minutes.");
             }
-        allocated += minutes;
+        try {
+            allocated = Math.addExact(allocated, minutes);
+        } catch (ArithmeticException e) {
+            throw new RuleException("Extra time exceeds the maximum supported allowance.");
+        }
     }
 }
