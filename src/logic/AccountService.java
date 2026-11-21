@@ -1,4 +1,4 @@
-Spackage logic;
+package logic;
 
 import java.time.*;
 import java.util.*;
