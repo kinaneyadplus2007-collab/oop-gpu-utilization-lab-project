@@ -42,6 +42,31 @@ public class AccessRequest implements Storable {
 
     @Override
     public String toLine() {
-        throw new UnsupportedOperationException("TODO: agree the line format with Ali (DataStore)");
+        return Lines.join(
+                Lines.enc(universityId),
+                Lines.enc(name),
+                Lines.enc(email),
+                Lines.enc(phone),
+                Lines.enc(password),
+                status.name()
+        );
+    }
+
+    public static AccessRequest fromLine(String line) throws RuleException {
+        String[] f = Lines.split(line, 6);
+
+        try {
+            AccessRequest request = new AccessRequest(
+                    Lines.dec(f[0]),
+                    Lines.dec(f[1]),
+                    Lines.dec(f[2]),
+                    Lines.dec(f[3]),
+                    Lines.dec(f[4])
+            );
+            request.status = RequestStatus.valueOf(f[5]);
+            return request;
+        } catch (IllegalArgumentException e) {
+            throw new RuleException("Bad saved request line.");
+        }
     }
 }
