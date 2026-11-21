@@ -25,6 +25,28 @@ public class TimeGrant implements Storable {
 
     @Override
     public String toLine() {
-        throw new UnsupportedOperationException("TODO: agree the line format with Ali (DataStore)");
+        return Lines.join(
+                Lines.enc(studentId),
+                String.valueOf(minutes),
+                Lines.enc(reason),
+                Lines.enc(adminName),
+                Lines.time(time)
+        );
+    }
+
+    public static TimeGrant fromLine(String line) throws RuleException {
+        String[] f = Lines.split(line, 5);
+
+        try {
+            return new TimeGrant(
+                    Lines.dec(f[0]),
+                    Integer.parseInt(f[1]),
+                    Lines.dec(f[2]),
+                    Lines.dec(f[3]),
+                    Lines.parseTime(f[4])
+            );
+        } catch (NumberFormatException | java.time.format.DateTimeParseException e) {
+            throw new RuleException("Bad saved grant line.");
+        }
     }
 }
