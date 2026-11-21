@@ -1,14 +1,8 @@
-package logic;
+Spackage logic;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
-import model.AccessRequest;
-import model.Administrator;
-import model.RequestStatus;
-import model.RuleException;
-import model.Student;
-import model.TimeGrant;
-import model.User;
+import model.*;
 
 public class AccountService {
     public static final int DEFAULT_MINUTES = 100;
