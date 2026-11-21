@@ -5,7 +5,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
-import logic.*;
 import model.RuleException;
 
 public class AdminFrame extends JFrame implements Refreshable {
