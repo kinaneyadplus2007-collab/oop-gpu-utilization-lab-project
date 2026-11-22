@@ -1,20 +1,20 @@
-J101|100001|Image+resize|PyTorch|Sample+job+J101|SMALL|16/11/2026 08:00|COMPLETED|1|16/11/2026 08:00|16/11/2026 08:05||||true
-J102|100002|Train+classifier|TensorFlow|Sample+job+J102|MEDIUM|16/11/2026 08:02|COMPLETED|2|16/11/2026 08:02|16/11/2026 08:17||||true
-J103|100003|Fine-tune+model|PyTorch|Sample+job+J103|LARGE|16/11/2026 08:04|COMPLETED|3|16/11/2026 08:04|16/11/2026 08:34||||true
-J104|100004|Protein+folding|JAX|Sample+job+J104|VERY_LARGE|16/11/2026 08:06|RUNNING|1|16/11/2026 08:06|||||false
-J105|100005|Sentiment+analysis|PyTorch|Sample+job+J105|MEDIUM|16/11/2026 08:08|CANCELLED|4|16/11/2026 08:08|16/11/2026 08:12|100005|Wrong+dataset+selected|16/11/2026 08:12|true
-J106|100001|Object+detection|TensorFlow|Sample+job+J106|LARGE|16/11/2026 08:10|COMPLETED|4|16/11/2026 08:12|16/11/2026 08:42||||true
-J107|100002|Quick+test|PyTorch|Sample+job+J107|SMALL|16/11/2026 08:12|COMPLETED|2|16/11/2026 08:17|16/11/2026 08:22||||true
-J108|100003|Data+augmentation|PyTorch|Sample+job+J108|MEDIUM|16/11/2026 08:14|COMPLETED|2|16/11/2026 08:22|16/11/2026 08:37||||true
-J109|100004|Climate+simulation|JAX|Sample+job+J109|LARGE|16/11/2026 08:16|CANCELLED|3|16/11/2026 08:34|16/11/2026 08:42|Administrator|Wrong+input+files|16/11/2026 08:42|true
-J110|100005|Hyperparameter+check|TensorFlow|Sample+job+J110|SMALL|16/11/2026 08:18|COMPLETED|2|16/11/2026 08:37|16/11/2026 08:42||||true
-J111|100001|Speech+model|PyTorch|Sample+job+J111|MEDIUM|16/11/2026 08:20|RUNNING|2|16/11/2026 08:42|||||false
-J112|100002|Language+model|TensorFlow|Sample+job+J112|VERY_LARGE|16/11/2026 08:22|RUNNING|3|16/11/2026 08:42|||||false
-J113|100003|Unit+benchmark|PyTorch|Sample+job+J113|SMALL|16/11/2026 08:24|COMPLETED|4|16/11/2026 08:42|16/11/2026 08:47||||true
-J114|100004|Graph+network|JAX|Sample+job+J114|MEDIUM|16/11/2026 08:26|RUNNING|4|16/11/2026 08:47|||||false
-J115|100005|Image+segmentation|PyTorch|Sample+job+J115|LARGE|16/11/2026 08:28|QUEUED|0||||||false
-J116|100001|Feature+extraction|PyTorch|Sample+job+J116|SMALL|16/11/2026 08:30|CANCELLED|0|||100001|Submitted+by+mistake|16/11/2026 08:36|true
-J117|100002|Reinforcement+learning|TensorFlow|Sample+job+J117|MEDIUM|16/11/2026 08:32|QUEUED|0||||||false
-J118|100003|Style+transfer|PyTorch|Sample+job+J118|LARGE|16/11/2026 08:34|CANCELLED|0|||Administrator|Duplicate+job|16/11/2026 08:40|true
-J119|100004|Embedding+test|JAX|Sample+job+J119|SMALL|16/11/2026 08:36|QUEUED|0||||||false
-J120|100005|Time+series+model|TensorFlow|Sample+job+J120|MEDIUM|16/11/2026 08:38|QUEUED|0||||||false
+J101|1001|Data+preparation+1|Python|Prepare+the+research+dataset.|SMALL|16/11/2026 10:00|COMPLETED|1|16/11/2026 10:00|16/11/2026 10:05||||true
+J102|1002|Data+preparation+2|Python|Prepare+the+research+dataset.|SMALL|16/11/2026 10:00|COMPLETED|2|16/11/2026 10:00|16/11/2026 10:05||||true
+J103|1003|Data+preparation+3|Python|Prepare+the+research+dataset.|SMALL|16/11/2026 10:00|COMPLETED|3|16/11/2026 10:00|16/11/2026 10:05||||true
+J104|1004|Data+preparation+4|Python|Prepare+the+research+dataset.|SMALL|16/11/2026 10:00|COMPLETED|4|16/11/2026 10:00|16/11/2026 10:05||||true
+J105|1001|Model+training+1|PyTorch|Train+a+demonstration+model.|MEDIUM|16/11/2026 10:05|CANCELLED|1|16/11/2026 10:05|16/11/2026 10:07|1001|Selected+the+wrong+dataset.|16/11/2026 10:07|true
+J106|1002|Model+training+2|PyTorch|Train+a+demonstration+model.|MEDIUM|16/11/2026 10:05|CANCELLED|2|16/11/2026 10:05|16/11/2026 10:07|admin|Administrator+stopped+a+duplicate+run.|16/11/2026 10:07|true
+J107|1003|Model+training+3|PyTorch|Train+a+demonstration+model.|MEDIUM|16/11/2026 10:05|RUNNING|3|16/11/2026 10:05|||||false
+J108|1004|Model+training+4|PyTorch|Train+a+demonstration+model.|MEDIUM|16/11/2026 10:05|RUNNING|4|16/11/2026 10:05|||||false
+J109|1001|Research+task+1|TensorFlow|Run+a+simulated+research+experiment.|LARGE|16/11/2026 10:10|RUNNING|1|16/11/2026 10:10|||||false
+J110|1002|Research+task+2|TensorFlow|Run+a+simulated+research+experiment.|VERY_LARGE|16/11/2026 10:10|RUNNING|2|16/11/2026 10:10|||||false
+J111|1003|Research+task+3|TensorFlow|Run+a+simulated+research+experiment.|SMALL|16/11/2026 10:10|CANCELLED|0|||1003|No+longer+need+this+queued+experiment.|16/11/2026 10:10|true
+J112|1004|Research+task+4|TensorFlow|Run+a+simulated+research+experiment.|MEDIUM|16/11/2026 10:10|CANCELLED|0|||admin|Administrator+removed+a+duplicate+request.|16/11/2026 10:10|true
+J113|1005|Research+task+5|TensorFlow|Run+a+simulated+research+experiment.|VERY_LARGE|16/11/2026 10:10|QUEUED|0||||||false
+J114|1001|Research+task+6|TensorFlow|Run+a+simulated+research+experiment.|MEDIUM|16/11/2026 10:10|QUEUED|0||||||false
+J115|1002|Research+task+7|TensorFlow|Run+a+simulated+research+experiment.|SMALL|16/11/2026 10:10|QUEUED|0||||||false
+J116|1003|Research+task+8|TensorFlow|Run+a+simulated+research+experiment.|LARGE|16/11/2026 10:10|QUEUED|0||||||false
+J117|1004|Research+task+9|TensorFlow|Run+a+simulated+research+experiment.|MEDIUM|16/11/2026 10:10|QUEUED|0||||||false
+J118|1005|Research+task+10|TensorFlow|Run+a+simulated+research+experiment.|LARGE|16/11/2026 10:10|QUEUED|0||||||false
+J119|1001|Research+task+11|TensorFlow|Run+a+simulated+research+experiment.|MEDIUM|16/11/2026 10:10|QUEUED|0||||||false
+J120|1002|Research+task+12|TensorFlow|Run+a+simulated+research+experiment.|SMALL|16/11/2026 10:10|QUEUED|0||||||false

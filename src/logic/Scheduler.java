@@ -224,7 +224,9 @@ public class Scheduler {
 
     public long queueWait(Job job) {
         if (job == null || !clock.isSet()) return 0;
-        LocalDateTime end = job.getStartTime() == null ? clock.now() : job.getStartTime();
+        LocalDateTime end = job.getStartTime();
+        if (end == null) end = job.getCancelTime();
+        if (end == null) end = clock.now();
         return Math.max(0, ChronoUnit.MINUTES.between(job.getSubmissionTime(), end));
     }
 

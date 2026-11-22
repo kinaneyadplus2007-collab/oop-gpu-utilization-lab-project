@@ -19,7 +19,7 @@ public class AllJobsPanel extends JPanel implements Refreshable {
             new Object[] {
                     "Job", "Student", "Title", "Application", "Size", "Status",
                     "GPU", "Submitted", "Start / predicted", "Finish / predicted",
-                    "Wait", "Charged"
+                    "Wait", "Charged", "Queue position"
             },
             0) {
         @Override
@@ -29,6 +29,9 @@ public class AllJobsPanel extends JPanel implements Refreshable {
     };
 
     private final TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+    private final JTable table = new JTable(model);
+    private final JButton cancelButton = new JButton("Cancel selected job");
+    private final JButton detailsButton = new JButton("View details");
 
     public AllJobsPanel(AppContext context) {
         super(new BorderLayout(6, 6));
@@ -40,9 +43,28 @@ public class AllJobsPanel extends JPanel implements Refreshable {
         filters.add(statusFilter);
         add(filters, BorderLayout.NORTH);
 
-        JTable table = new JTable(model);
         table.setRowSorter(sorter);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(
+                    i >= 7 && i <= 9 ? 170 : 120
+            );
+        }
         add(new JScrollPane(table), BorderLayout.CENTER);
+
+        cancelButton.setEnabled(false);
+        detailsButton.setEnabled(false);
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        actions.add(detailsButton);
+        actions.add(cancelButton);
+        add(actions, BorderLayout.SOUTH);
+
+        cancelButton.addActionListener(e -> cancelSelectedJob());
+        detailsButton.addActionListener(e -> showDetails());
+        table.getSelectionModel().addListSelectionListener(
+                e -> updateCancelButton()
+        );
 
         search.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
@@ -86,6 +108,126 @@ public class AllJobsPanel extends JPanel implements Refreshable {
                 return false;
             }
         });
+        updateCancelButton();
+    }
+
+    private Job selectedJob() {
+        int row = table.getSelectedRow();
+        if (row < 0 || row >= table.getRowCount()) {
+            return null;
+        }
+
+        int modelRow = table.convertRowIndexToModel(row);
+        String id = model.getValueAt(modelRow, 0).toString();
+        return context.getScheduler().findJob(id);
+    }
+
+    private void updateCancelButton() {
+        Job job = selectedJob();
+        cancelButton.setEnabled(job != null && job.isCancellable());
+        detailsButton.setEnabled(job != null);
+    }
+
+    private String detailsText(Job job) {
+        boolean queued = job.getStatus() == JobStatus.QUEUED;
+        boolean running = job.getStatus() == JobStatus.RUNNING;
+
+        String text = "Job: " + job.getJobId()
+                + "\nStudent: " + job.getStudentId()
+                + "\nTitle: " + job.getTitle()
+                + "\nApplication: " + job.getApplicationName()
+                + "\nDescription: " + job.getDescription()
+                + "\nTask size: " + job.getTaskSize().getLabel()
+                + "\nWorkload: " + job.getWorkloadUnits() + " units"
+                + "\nDuration: " + job.getDuration() + " min"
+                + "\nStatus: " + job.getStatus()
+                + "\nGPU: " + (job.getAssignedGpuId() == 0 ? "—" : job.getAssignedGpuId())
+                + "\nSubmitted: " + format(job.getSubmissionTime())
+                + "\nStart / predicted: " + format(context.getScheduler().predictedStart(job), queued)
+                + "\nFinish / predicted: " + format(context.getScheduler().predictedFinish(job), queued || running)
+                + "\nQueue position: " + (queued ? context.getScheduler().queuePosition(job) : "—")
+                + "\nQueue wait so far / total: " + context.getScheduler().queueWait(job) + " min"
+                + (queued ? "\nRemaining wait: " + context.getScheduler().remainingWait(job) + " min" : "")
+                + "\nRuntime so far / total: " + context.getScheduler().minutesCharged(job) + " min"
+                + "\nCharged: " + (job.isSettled()
+                        ? context.getScheduler().minutesCharged(job) + " min"
+                        : "Not settled yet");
+
+        if (job.getStatus() == JobStatus.CANCELLED) {
+            text += "\nCancelled by: " + job.getCancelledBy()
+                    + "\nCancelled at: " + format(job.getCancelTime())
+                    + "\nReason: " + job.getCancelReason();
+        }
+        return text;
+    }
+
+    private void showDetails() {
+        Job job = selectedJob();
+        if (job == null) return;
+
+        JTextArea details = new JTextArea(detailsText(job), 22, 55);
+        details.setEditable(false);
+        details.setLineWrap(true);
+        details.setWrapStyleWord(true);
+        details.setCaretPosition(0);
+
+        JOptionPane.showMessageDialog(
+                this, new JScrollPane(details), "Job details",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void cancelSelectedJob() {
+        Job job = selectedJob();
+        if (job == null || !job.isCancellable()) {
+            JOptionPane.showMessageDialog(
+                    this, "Select a queued or running job."
+            );
+            return;
+        }
+
+        String reason = JOptionPane.showInputDialog(
+                this, "Enter the cancellation reason:"
+        );
+        if (reason == null) {
+            return;
+        }
+        if (reason.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this, "A cancellation reason is required."
+            );
+            return;
+        }
+
+        int charge = context.getScheduler().minutesCharged(job);
+        int returned = job.getDuration() - charge;
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Cancel job " + job.getJobId() + "?"
+                + "\nStudent: " + job.getStudentId()
+                + "\nTotal charge: " + charge + " GPU minutes."
+                + "\nReturned to available balance: " + returned + " minutes.",
+                "Confirm cancellation",
+                JOptionPane.YES_NO_OPTION
+        );
+        if (choice != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            context.getScheduler().cancel(
+                    job, context.getAccounts().getAdmin(), reason.trim()
+            );
+        } catch (RuleException ex) {
+            JOptionPane.showMessageDialog(
+                    this, ex.getMessage(), "Cancellation failed",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        context.afterChange();
     }
 
     @Override
@@ -95,6 +237,7 @@ public class AllJobsPanel extends JPanel implements Refreshable {
             return;
         }
 
+        table.clearSelection();
         model.setRowCount(0);
         for (Job job : context.getScheduler().getAllJobs()) {
             LocalDateTime start = context.getScheduler().predictedStart(job);
@@ -111,10 +254,11 @@ public class AllJobsPanel extends JPanel implements Refreshable {
                     job.getStatus(),
                     gpu,
                     format(job.getSubmissionTime()),
-                    format(start),
-                    format(finish),
+                    format(start, job.getStatus() == JobStatus.QUEUED),
+                    format(finish, job.getStatus() == JobStatus.QUEUED || job.getStatus() == JobStatus.RUNNING),
                     wait,
-                    context.getScheduler().minutesCharged(job) + " min"
+                    job.isSettled() ? context.getScheduler().minutesCharged(job) + " min" : "—",
+                    job.getStatus() == JobStatus.QUEUED ? context.getScheduler().queuePosition(job) : "—"
             });
         }
 
@@ -123,5 +267,9 @@ public class AllJobsPanel extends JPanel implements Refreshable {
 
     private static String format(LocalDateTime time) {
         return time == null ? "—" : time.format(TIME);
+    }
+
+    private static String format(LocalDateTime time, boolean predicted) {
+        return time == null ? "—" : (predicted ? "≈ " : "") + time.format(TIME);
     }
 }

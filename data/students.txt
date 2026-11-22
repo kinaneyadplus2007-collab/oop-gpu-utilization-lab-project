@@ -1,5 +1,5 @@
-100001|Kinan+Zein+Aldean|kinan.zeinaldean%40example.com|0501234567|pass1001|100|35|15
-100002|Yousif+Allam|yousif.allam%40example.com|0559876543|pass1002|100|20|75
-100003|Layla+Hassan|layla.hassan%40ku.ac.ae|0507654321|pass1003|100|50|0
-100004|Ali|ali%40example.com|0528887766|pass1004|150|8|80
-100005|Maryam+Saeed|maryam.saeed%40ku.ac.ae|0543332211|pass1005|70|9|45
+1001|Ali|student1001%40example.com|0501234500|demo123|120|7|60
+1002|Sara|student1002%40example.com|0501234501|demo123|100|7|70
+1003|Hamad|student1003%40example.com|0501234502|demo123|100|5|45
+1004|Mariam|student1004%40example.com|0501234503|demo123|100|5|30
+1005|Noura|student1005%40example.com|0501234504|demo123|105|0|90

@@ -13,8 +13,9 @@ import logic.Validator;
 import model.RuleException;
 import model.Student;
 
-public class StudentsPanel extends JPanel {
+public class StudentsPanel extends JPanel implements Refreshable {
     private AccountService accounts;
+    private final Runnable onChange;
     private Supplier<LocalDateTime> clock;
     private DefaultTableModel tableModel;
     private JTable table;
@@ -24,8 +25,14 @@ public class StudentsPanel extends JPanel {
     private List<Student> shown;
 
     public StudentsPanel(AccountService accounts, Supplier<LocalDateTime> clock) {
+        this(accounts, clock, () -> { });
+    }
+
+    public StudentsPanel(AccountService accounts, Supplier<LocalDateTime> clock,
+                         Runnable onChange) {
         this.accounts = accounts;
         this.clock = clock;
+        this.onChange = onChange == null ? () -> { } : onChange;
         setLayout(new BorderLayout());
 
         JPanel topRow = new JPanel(new FlowLayout());
@@ -94,6 +101,7 @@ public class StudentsPanel extends JPanel {
         }
     }
 
+    @Override
     public void refresh() {
         show(accounts.getStudents());
     }
@@ -143,6 +151,7 @@ public class StudentsPanel extends JPanel {
             minutesField.setText("");
             reasonField.setText("");
             refresh();
+            onChange.run();
         } catch (RuleException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
